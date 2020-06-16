@@ -1,4 +1,4 @@
-package com.caionastu.loginservice;
+package com.caionastu.exampleservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

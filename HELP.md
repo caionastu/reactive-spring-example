@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.caionastu.login-service' is invalid and this project uses 'com.caionastu.loginservice' instead.
+* The original package name 'com.caionastu.login-service' is invalid and this project uses 'com.caionastu.exampleservice' instead.
 
 # Getting Started
 

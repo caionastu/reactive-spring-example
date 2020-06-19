@@ -1,31 +1,27 @@
 package com.caionastu.exampleReactiveService.api.domain.example.service;
 
 import com.caionastu.exampleReactiveService.api.application.core.ErrorKeys;
-import com.caionastu.exampleReactiveService.api.application.core.ErrorMessage;
 import com.caionastu.exampleReactiveService.api.application.core.exceptions.BusinessException;
-import com.caionastu.exampleReactiveService.api.domain.example.validator.ExampleHasSameCodeValidator;
 import com.caionastu.exampleReactiveService.api.domain.example.validator.IExamplePersistValidator;
 import com.caionastu.exampleReactiveService.api.domain.example.vo.Example;
 import com.caionastu.exampleReactiveService.api.infrastructure.repository.ExampleRepository;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Service
 @Slf4j
 public class ExampleService {
 
     private final ExampleRepository repository;
-    private final ExampleHasSameCodeValidator validator;
+    private final Flux<IExamplePersistValidator> validators;
 
-    public ExampleService(ExampleRepository repository, ExampleHasSameCodeValidator validator) {
+    public ExampleService(ExampleRepository repository, ListableBeanFactory listableBeanFactory) {
         this.repository = repository;
-        this.validator = validator;
+        this.validators = Flux.fromIterable(listableBeanFactory.getBeansOfType(IExamplePersistValidator.class).values());
     }
 
     public Flux<Example> findAll() {
@@ -37,14 +33,17 @@ public class ExampleService {
     }
 
     public Mono<Example> create(Example example) {
-        return persistValidators(example)
-                .flatMap(errorMessage -> {
-                    if (!errorMessage.isEmpty()) {
-                        log.error(ErrorKeys.FAIL_TO_CREATE_ENTITY);
-                        log.error("Object: " + example);
-                        return Mono.error(new BusinessException(ErrorKeys.FAIL_TO_CREATE_ENTITY));
+        return validators.flatMap(validator -> validator.validate(example))
+                .reduce((blockTotalize, currentBlock) -> {
+                    blockTotalize.addErrorMessages(currentBlock.getErrorMessages());
+                    return blockTotalize;
+                })
+                .flatMap(errorBlock -> {
+                    if (errorBlock.hasErrors()) {
+                        errorBlock.setCode(HttpStatus.PRECONDITION_FAILED);
+                        errorBlock.setHeader(ErrorKeys.Common.FAIL_TO_CREATE_ENTITY);
+                        return Mono.error(new BusinessException(errorBlock));
                     }
-
                     return repository.create(example);
                 });
     }
@@ -52,22 +51,27 @@ public class ExampleService {
     public Mono<Example> update(String id, Example example) {
         example.setId(id);
 
+        return validators.flatMap(validator -> validator.validate(example))
+                .reduce((blockTotalize, currentBlock) -> {
+                    blockTotalize.addErrorMessages(currentBlock.getErrorMessages());
+                    return blockTotalize;
+                })
+                .flatMap(errorBlock -> {
+                    if (errorBlock.hasErrors()) {
+                        errorBlock.setCode(HttpStatus.PRECONDITION_FAILED);
+                        errorBlock.setHeader(ErrorKeys.Common.FAIL_TO_UPDATE_ENTITY);
+                        return Mono.error(new BusinessException(errorBlock));
+                    }
 
-//        if (!errors.isEmpty()) {
-//            log.error(ErrorKeys.FAIL_TO_UPDATE_ENTITY);
-//            log.error("Object: " + example);
-//            return Mono.error(new BusinessException(ErrorKeys.FAIL_TO_UPDATE_ENTITY, errors));
-//        }
-
-        return findById(id)
-                .switchIfEmpty(Mono.error(new BusinessException(ErrorKeys.ENTITY_NOT_FOUND)))
-                .map(oldEntity -> {
+                    return findById(id);
+                })
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorKeys.Common.ENTITY_NOT_FOUND)))
+                .flatMap(oldEntity -> {
                     oldEntity.setName(example.getName());
                     oldEntity.setLastName(example.getLastName());
                     oldEntity.setCode(example.getCode());
-                    return oldEntity;
-                })
-                .flatMap(repository::update);
+                    return repository.update(oldEntity);
+                });
     }
 
     public Mono<Void> delete(String id) {
@@ -75,7 +79,4 @@ public class ExampleService {
                 .flatMap(example -> repository.delete(id));
     }
 
-    private Mono<ErrorMessage> persistValidators(Example example) {
-        return validator.validate(example);
-    }
 }

@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.caionastu</groupId>
-	<artifactId>login-service</artifactId>
+	<artifactId>reactive-example</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>login-service</name>
-	<description>LoginService</description>
+	<name>reactive-example</name>
+	<description>reactive-example</description>
 
 	<properties>
 		<java.version>11</java.version>

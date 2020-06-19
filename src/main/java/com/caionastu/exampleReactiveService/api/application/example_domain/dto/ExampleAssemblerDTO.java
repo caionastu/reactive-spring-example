@@ -1,9 +1,10 @@
 package com.caionastu.exampleReactiveService.api.application.example_domain.dto;
 
+
 import com.caionastu.exampleReactiveService.api.application.core.IAssemblerDTO;
 import com.caionastu.exampleReactiveService.api.domain.example.vo.Example;
 
-public class ExampleDTOAssemblerDTO implements IAssemblerDTO<ExampleDTO, Example> {
+public class ExampleAssemblerDTO implements IAssemblerDTO<ExampleDTO, Example> {
 
     @Override
     public ExampleDTO toDTO(Example example) {

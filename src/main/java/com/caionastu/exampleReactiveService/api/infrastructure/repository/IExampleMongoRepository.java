@@ -6,5 +6,4 @@ import reactor.core.publisher.Mono;
 
 public interface IExampleMongoRepository extends ReactiveMongoRepository<Example, String> {
 
-    Mono<Boolean> existsByCode(String code);
 }

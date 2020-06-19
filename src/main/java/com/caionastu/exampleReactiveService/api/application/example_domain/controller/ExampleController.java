@@ -1,6 +1,5 @@
 package com.caionastu.exampleReactiveService.api.application.example_domain.controller;
 
-import com.caionastu.exampleReactiveService.api.application.core.exceptions.BusinessException;
 import com.caionastu.exampleReactiveService.api.application.example_domain.appService.ExampleAppService;
 import com.caionastu.exampleReactiveService.api.application.example_domain.dto.ExampleDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -39,10 +37,9 @@ public class ExampleController {
 
     @PostMapping
     public Mono<ResponseEntity<ExampleDTO>> create(@RequestBody ExampleDTO exampleDTO) {
-        log.info("Creat Request");
+        log.info("Create Request");
         return appService.create(exampleDTO)
-                .map(ResponseEntity::ok)
-                .onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
+                .map(ResponseEntity::ok);
     }
 
     @PutMapping(path = "/{id}")
@@ -50,8 +47,7 @@ public class ExampleController {
         log.info("Update Request");
         return appService.update(id, exampleDTO)
                 .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build())
-                .onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping(path = "/{id}")

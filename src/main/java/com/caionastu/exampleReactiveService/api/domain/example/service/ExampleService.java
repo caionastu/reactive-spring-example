@@ -40,7 +40,7 @@ public class ExampleService {
                 })
                 .flatMap(errorBlock -> {
                     if (errorBlock.hasErrors()) {
-                        errorBlock.setCode(HttpStatus.PRECONDITION_FAILED);
+                        errorBlock.setCode(HttpStatus.BAD_REQUEST);
                         errorBlock.setHeader(ErrorKeys.Common.FAIL_TO_CREATE_ENTITY);
                         return Mono.error(new BusinessException(errorBlock));
                     }
@@ -58,7 +58,7 @@ public class ExampleService {
                 })
                 .flatMap(errorBlock -> {
                     if (errorBlock.hasErrors()) {
-                        errorBlock.setCode(HttpStatus.PRECONDITION_FAILED);
+                        errorBlock.setCode(HttpStatus.BAD_REQUEST);
                         errorBlock.setHeader(ErrorKeys.Common.FAIL_TO_UPDATE_ENTITY);
                         return Mono.error(new BusinessException(errorBlock));
                     }

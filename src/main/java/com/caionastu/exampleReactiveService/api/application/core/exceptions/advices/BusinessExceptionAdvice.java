@@ -2,6 +2,7 @@ package com.caionastu.exampleReactiveService.api.application.core.exceptions.adv
 
 import com.caionastu.exampleReactiveService.api.application.core.ErrorBlock;
 import com.caionastu.exampleReactiveService.api.application.core.exceptions.BusinessException;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

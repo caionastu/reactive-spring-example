@@ -1,4 +1,4 @@
-package com.caionastu.exampleReactiveService.api.application.core;
+package com.caionastu.exampleReactiveService.api.application.error;
 
 public class ErrorKeys {
 

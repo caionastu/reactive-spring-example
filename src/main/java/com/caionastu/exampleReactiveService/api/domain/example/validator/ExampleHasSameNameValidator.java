@@ -1,7 +1,7 @@
 package com.caionastu.exampleReactiveService.api.domain.example.validator;
 
 import com.caionastu.exampleReactiveService.api.application.core.ErrorBlock;
-import com.caionastu.exampleReactiveService.api.application.core.ErrorKeys;
+import com.caionastu.exampleReactiveService.api.application.error.ErrorKeys;
 import com.caionastu.exampleReactiveService.api.domain.example.vo.Example;
 import com.caionastu.exampleReactiveService.api.infrastructure.repository.ExampleRepository;
 import lombok.extern.slf4j.Slf4j;

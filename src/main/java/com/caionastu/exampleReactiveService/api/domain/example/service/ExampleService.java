@@ -1,6 +1,6 @@
 package com.caionastu.exampleReactiveService.api.domain.example.service;
 
-import com.caionastu.exampleReactiveService.api.application.core.ErrorKeys;
+import com.caionastu.exampleReactiveService.api.application.error.ErrorKeys;
 import com.caionastu.exampleReactiveService.api.application.core.exceptions.BusinessException;
 import com.caionastu.exampleReactiveService.api.domain.example.validator.IExamplePersistValidator;
 import com.caionastu.exampleReactiveService.api.domain.example.vo.Example;

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BusinessException extends RuntimeException {
 
     @Getter
-    private ErrorBlock errorBlock;
+    private final ErrorBlock errorBlock;
 
     public BusinessException(ErrorBlock errorBlock) {
         super(errorBlock.getHeader());
@@ -21,15 +21,6 @@ public class BusinessException extends RuntimeException {
         this.errorBlock = ErrorBlock.builder()
                 .header(message)
                 .build();
-    }
-
-    public BusinessException(String message, Throwable e) {
-        super(message, e);
-    }
-
-    public void logErrors() {
-        this.errorBlock.getErrorMessages()
-                .forEach(errorMessage -> log.error(errorMessage.getMessage()));
     }
 
 }
